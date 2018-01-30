@@ -44,9 +44,14 @@ WEB_F() {
 	fi
 
 	Print "Compiling Mod_JK"
-	cd /opt/tomcat-connectors-1.2.42-src/native
-	./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
-	Stat $?
+	if [ -f /etc/httpd/modules/mod_jk.so ] ; then 
+		Stat SKIP 
+	else
+		cd /opt/tomcat-connectors-1.2.42-src/native
+		./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
+		Stat $?
+	fi
+
 
 	#Print "Starting Web Server"
 
