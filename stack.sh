@@ -20,7 +20,7 @@ HEAD_F() {
 }
 
 Print() {
-	echo -en "	-> $1 - "
+	echo -n "	-> $1 - "
 }
 
 Stat() {
