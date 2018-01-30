@@ -6,6 +6,9 @@ MODJK_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/t
 MODJK_TAR_FILE="/opt/$(echo $MODJK_URL | awk -F / '{print $NF}')"
 MODJK_DIR=$(echo $MODJK_TAR_FILE | sed -e 's/.tar.gz//' )
 
+TOMCAT_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.27/bin/apache-tomcat-8.5.27.tar.gz'
+TOMCAT_TAR_FILE="/opt/$(echo $TOMCAT_URL | awk -F / '{print $NF}')"
+TOMCAT_DIR=$(echo $TOMCAT_TAR_FILE | sed -e 's/.tar.gz//')
 
 ##### Functions
 HEAD_F() {
@@ -72,14 +75,10 @@ JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf
 	systemctl enable httpd &>/dev/null
 	systemctl restart httpd &>/dev/null 
 	Stat $?
-
-
-	#Print "Starting Web Server"
-
 }
 
 APP_F() {
-	echo "Installing APP Server"
+	
 }
 
 DB_F() {
