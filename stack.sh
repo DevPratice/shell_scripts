@@ -26,7 +26,7 @@ WEB_F() {
 	yum install httpd httpd-devel gcc -y &>/dev/null
 	Stat $?
 	Print "Downloading Mod_JK Package"
-	wget http://edrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz -O /opt/tomcat-connectors-1.2.42-src.tar.gz &>/dev/null
+	wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz -O /opt/tomcat-connectors-1.2.42-src.tar.gz &>/dev/null
 	Stat $?
 
 
