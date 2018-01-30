@@ -2,8 +2,30 @@
 
 
 ##### Functions
+HEAD_F() {
+	echo -e "** \e[35;4m$1\e[0m"	
+}
+
+Print() {
+	echo -en "	-> $1 - "
+}
+
+Stat() {
+	if [ $1 -eq 0 ]; then 
+		echo -e "\e[32mSUCCESS\e[0m"
+	else
+		echo -e "\e[31mFAILURE\e[0m"
+		exit 1
+	fi
+}
+
 WEB_F() {
-	echo "Installing Web Server" 
+	HEAD_F "Configuring Web Service"
+
+	Print "Installing Web Server"
+	yum install httpd httpd-devel gcc -y &>/dev/null
+	Stat $?
+	echo "Installing ModJK Service"
 }
 
 APP_F() {
@@ -26,12 +48,16 @@ if [ "$USER" != root ]; then
 	exit 1
 fi
 
-read -p 'Which Service you would like to install[WEB|APP|DB|ALL] : ' SETUP
-if [ -z "$SETUP" ]; then 
-	SETUP=ALL
+if [ -z "$1" ]; then 
+	read -p 'Which Service you would like to install[WEB|APP|DB|ALL] : ' SETUP
+	if [ -z "$SETUP" ]; then 
+		SETUP=ALL
+	fi
+else
+	SETUP=$1
 fi
 
-
+SETUP=$(echo $SETUP | tr [a-z] [A-Z])
 case $SETUP in 
 	WEB|web) 
 		WEB_F
