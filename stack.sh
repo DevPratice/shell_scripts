@@ -34,18 +34,18 @@ WEB_F() {
 	yum install httpd httpd-devel gcc -y &>/dev/null
 	Stat $?
 	Print "Downloading Mod_JK Package"
-	if [ -f /opt/tomcat-connectors-1.2.42-src.tar.gz ]; then
+	if [ -f $MODJK_TAR_FILE ]; then
 		Stat SKIP
 	else
-		wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz -O /opt/tomcat-connectors-1.2.42-src.tar.gz &>/dev/null
+		wget $MODJK_URL -O $MODJK_TAR_FILE &>/dev/null
 		Stat $?
 	fi
 	Print "Extracting Mod_JK Package"
-	if [ -d /opt/tomcat-connectors-1.2.42-src ]; then 
+	if [ -d $MODJK_DIR ]; then 
 		Stat SKIP 
 	else
 		cd /opt
-		tar xf /opt/tomcat-connectors-1.2.42-src.tar.gz
+		tar xf $MODJK_TAR_FILE
 		Stat $?
 	fi
 
@@ -53,7 +53,7 @@ WEB_F() {
 	if [ -f /etc/httpd/modules/mod_jk.so ] ; then 
 		Stat SKIP 
 	else
-		cd /opt/tomcat-connectors-1.2.42-src/native
+		cd $MODJK_DIR/native
 		./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
 		Stat $?
 	fi
