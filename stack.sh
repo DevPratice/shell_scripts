@@ -83,8 +83,11 @@ JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf
 
 APP_F() {
 
+	echo
+	HEAD_F "Configuring App Service"
+
 	Print "Installing JAVA"
-	yum install java -y 
+	yum install java -y  &>/dev/null
 	Stat $?
 
 	Print "Downloading Tomcat"
