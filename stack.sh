@@ -43,6 +43,11 @@ WEB_F() {
 		Stat $?
 	fi
 
+	Print "Compiling Mod_JK"
+	cd /opt/tomcat-connectors-1.2.42-src/native
+	./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
+	Stat $?
+
 	#Print "Starting Web Server"
 
 }
