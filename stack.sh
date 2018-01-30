@@ -51,6 +51,21 @@ WEB_F() {
 		./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
 		Stat $?
 	fi
+	echo 'worker.list=tomcatA
+### Set properties
+worker.tomcatA.type=ajp13
+worker.tomcatA.host=localhost
+worker.tomcatA.port=8009' >/etc/httpd/conf.d/worker.properties
+
+	echo 'LoadModule jk_module modules/mod_jk.so
+JkWorkersFile conf.d/worker.properties
+JkMount /student tomcatA
+JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf
+
+	Print "Starting Web Service"
+	systemctl enable httpd &>/dev/null
+	systemctl restart httpd &>/dev/null 
+	Stat $?
 
 
 	#Print "Starting Web Server"
