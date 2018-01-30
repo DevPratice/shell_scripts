@@ -1,6 +1,14 @@
 #!/bin/bash
 
 
+#### Variables
+MODJK_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz'
+MODJK_TAR_FILE="/opt/$(echo $MODJK_URL | awk -F / '{print $NF}')"
+
+echo MODJK_URL = $MODJK_URL
+echo MODJK_TAR_FILE = $MODJK_TAR_FILE
+exit
+
 ##### Functions
 HEAD_F() {
 	echo -e "** \e[35;4m$1\e[0m"	
