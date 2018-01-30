@@ -34,7 +34,14 @@ WEB_F() {
 		wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz -O /opt/tomcat-connectors-1.2.42-src.tar.gz &>/dev/null
 		Stat $?
 	fi
-
+	Print "Extracting Mod_JK Package"
+	if [ -d /opt/tomcat-connectors-1.2.42-src ]; then 
+		Stat SKIP 
+	else
+		cd /opt
+		tar xf /opt/tomcat-connectors-1.2.42-src.tar.gz
+		Stat $?
+	fi
 
 	#Print "Starting Web Server"
 
