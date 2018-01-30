@@ -10,6 +10,10 @@ TOMCAT_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.27/bin/
 TOMCAT_TAR_FILE="/opt/$(echo $TOMCAT_URL | awk -F / '{print $NF}')"
 TOMCAT_DIR=$(echo $TOMCAT_TAR_FILE | sed -e 's/.tar.gz//')
 
+MARIADB_CONN_URL='https://github.com/cit-latex/stack/raw/master/mysql-connector-java-5.1.40.jar'
+MARIADB_CONN_FILE=$(echo $MARIADB_CONN_URL | awk -F / '{print $NF}')
+STUDENTAPP_WAR_URL='https://github.com/cit-latex/stack/raw/master/student.war'
+
 ##### Functions
 HEAD_F() {
 	echo -e "** \e[35;4m$1\e[0m"	
@@ -78,7 +82,41 @@ JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf
 }
 
 APP_F() {
-	
+
+	Print "Installing JAVA"
+	yum install java -y 
+	Stat $?
+
+	Print "Downloading Tomcat"
+	if [ -f $TOMCAT_TAR_FILE ];then 
+		Stat SKIP 
+	else
+		wget $TOMCAT_URL -O $TOMCAT_TAR_FILE &>/dev/null
+		Stat $?
+	fi
+
+	Print "Extracting Tomcat"
+	if [ -d $TOMCAT_DIR ]; then 
+		Stat SKIP 
+	else
+		cd /opt
+		tar xf $TOMCAT_TAR_FILE
+		Stat $?
+	fi
+
+	rm -rf $TOMCAT_DIR/webapps/*
+
+	Print "Downloading MariaDB Connector"
+	if [ -f $TOMCAT_DIR/lib/$MARIADB_CONN_FILE ]; then 
+		Stat SKIP 
+	else
+		wget $MARIADB_CONN_URL -O $TOMCAT_DIR/lib/$MARIADB_CONN_FILE &>/dev/null
+		Stat $?
+	fi 
+
+	Print "Downloading Student Webapp"
+	wget $STUDENTAPP_WAR_URL -O $TOMCAT_DIR/webapps/student.war &>/dev/null
+	Stat $?
 }
 
 DB_F() {
