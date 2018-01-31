@@ -153,7 +153,16 @@ APP_F() {
 }
 
 DB_F() {
-	echo "Installing DB Server"
+	echo
+	HEAD_F "Configuring DB Service"
+	Print "Installing MariaDB"
+	yum install mariadb-server -y &>/dev/null
+	Stat $?
+
+	Print "Starting Service"
+	systemctl enable mariadb &>/dev/null
+	systemctl restart mariadb &>/dev/null
+	Stat $?
 }
 
 ALL_F() {
