@@ -178,7 +178,7 @@ CREATE TABLE Students(student_id INT NOT NULL AUTO_INCREMENT,
 );
 grant all privileges on studentapp.* to 'student'@'%' identified by 'student@1';
 flush privileges;" >/tmp/student.sql 
-	mysql < /tmp/student.sql >/tmp/mysql.log 
+	mysql < /tmp/student.sql &>/tmp/mysql.log 
 	Stat $?
 }
 
