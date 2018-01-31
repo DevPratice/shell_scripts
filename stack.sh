@@ -14,6 +14,7 @@ MARIADB_CONN_URL='https://github.com/cit-latex/stack/raw/master/mysql-connector-
 MARIADB_CONN_FILE=$(echo $MARIADB_CONN_URL | awk -F / '{print $NF}')
 STUDENTAPP_WAR_URL='https://github.com/cit-latex/stack/raw/master/student.war'
 
+LOG=/tmp/stack.log.$$
 ##### Functions
 HEAD_F() {
 	echo -e "** \e[35;4m$1\e[0m"	
@@ -38,13 +39,13 @@ WEB_F() {
 	HEAD_F "Configuring Web Service"
 
 	Print "Installing Web Server"
-	yum install httpd httpd-devel gcc -y &>/dev/null
+	yum install httpd httpd-devel gcc -y &>>$LOG
 	Stat $?
 	Print "Downloading Mod_JK Package"
 	if [ -f $MODJK_TAR_FILE ]; then
 		Stat SKIP
 	else
-		wget $MODJK_URL -O $MODJK_TAR_FILE &>/dev/null
+		wget $MODJK_URL -O $MODJK_TAR_FILE &>>$LOG
 		Stat $?
 	fi
 	Print "Extracting Mod_JK Package"
@@ -61,7 +62,7 @@ WEB_F() {
 		Stat SKIP 
 	else
 		cd $MODJK_DIR/native
-		./configure --with-apxs=/usr/bin/apxs &>/dev/null && make &>/dev/null && make install &>/dev/null
+		./configure --with-apxs=/usr/bin/apxs &>>$LOG && make &>>$LOG && make install &>>$LOG
 		Stat $?
 	fi
 	echo 'worker.list=tomcatA
@@ -76,8 +77,8 @@ JkMount /student tomcatA
 JkMount /student/* tomcatA' >/etc/httpd/conf.d/mod_jk.conf
 
 	Print "Starting Web Service"
-	systemctl enable httpd &>/dev/null
-	systemctl restart httpd &>/dev/null 
+	systemctl enable httpd &>>$LOG
+	systemctl restart httpd &>>$LOG 
 	Stat $?
 }
 
@@ -87,14 +88,14 @@ APP_F() {
 	HEAD_F "Configuring App Service"
 
 	Print "Installing JAVA"
-	yum install java -y  &>/dev/null
+	yum install java -y  &>>$LOG
 	Stat $?
 
 	Print "Downloading Tomcat"
 	if [ -f $TOMCAT_TAR_FILE ];then 
 		Stat SKIP 
 	else
-		wget $TOMCAT_URL -O $TOMCAT_TAR_FILE &>/dev/null
+		wget $TOMCAT_URL -O $TOMCAT_TAR_FILE &>>$LOG
 		Stat $?
 	fi
 
@@ -113,24 +114,24 @@ APP_F() {
 	if [ -f $TOMCAT_DIR/lib/$MARIADB_CONN_FILE ]; then 
 		Stat SKIP 
 	else
-		wget $MARIADB_CONN_URL -O $TOMCAT_DIR/lib/$MARIADB_CONN_FILE &>/dev/null
+		wget $MARIADB_CONN_URL -O $TOMCAT_DIR/lib/$MARIADB_CONN_FILE &>>$LOG
 		Stat $?
 	fi 
 
 	Print "Downloading Student Webapp"
-	wget $STUDENTAPP_WAR_URL -O $TOMCAT_DIR/webapps/student.war &>/dev/null
+	wget $STUDENTAPP_WAR_URL -O $TOMCAT_DIR/webapps/student.war &>>$LOG
 	Stat $?
 
 	sed -i -e '/TestDB/ d' -e '$ i <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/studentapp"/>' $TOMCAT_DIR/conf/context.xml
 
 	#### Checking my tomcat is running or not
-	ps -ef | grep tomcat | grep -v grep &>/dev/null
+	ps -ef | grep tomcat | grep -v grep &>>$LOG
 	if [ $? -eq 0 ]; then 
 		Print "Restarting Tomcat"
-		sh $TOMCAT_DIR/bin/shutdown.sh &>/dev/null
+		sh $TOMCAT_DIR/bin/shutdown.sh &>>$LOG
 		i=12
 		while [ $i -gt 0 ]; do 
-			ps -ef | grep tomcat | grep -v grep &>/dev/null
+			ps -ef | grep tomcat | grep -v grep &>>$LOG
 			if [ $? -eq 0 ]; then
 				sleep 5
 			else
@@ -139,15 +140,15 @@ APP_F() {
 			sleep 5
 			i=$(($i-1))
 		done
-		ps -ef | grep tomcat | grep -v grep &>/dev/null
+		ps -ef | grep tomcat | grep -v grep &>>$LOG
 		if [ $? -eq 0 ] ; then 
 			Stat 1
 		fi
-		sh $TOMCAT_DIR/bin/startup.sh  &>/dev/null
+		sh $TOMCAT_DIR/bin/startup.sh  &>>$LOG
 		Stat $?
 	else
 		Print "Starting Tomcat" 
-		sh $TOMCAT_DIR/bin/startup.sh  &>/dev/null
+		sh $TOMCAT_DIR/bin/startup.sh  &>>$LOG
 		Stat $?
 	fi
 }
@@ -156,12 +157,12 @@ DB_F() {
 	echo
 	HEAD_F "Configuring DB Service"
 	Print "Installing MariaDB"
-	yum install mariadb-server -y &>/dev/null
+	yum install mariadb-server -y &>>$LOG
 	Stat $?
 
 	Print "Starting Service"
-	systemctl enable mariadb &>/dev/null
-	systemctl restart mariadb &>/dev/null
+	systemctl enable mariadb &>>$LOG
+	systemctl restart mariadb &>>$LOG
 	Stat $?
 
 	Print "Configuring DB"
