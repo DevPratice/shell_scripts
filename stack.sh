@@ -120,6 +120,34 @@ APP_F() {
 	Print "Downloading Student Webapp"
 	wget $STUDENTAPP_WAR_URL -O $TOMCAT_DIR/webapps/student.war &>/dev/null
 	Stat $?
+
+	#### Checking my tomcat is running or not
+	ps -ef | grep tomcat | grep -v grep &>/dev/null
+	if [ $? -eq 0 ]; then 
+		Print "Restarting Tomcat"
+		sh $TOMCAT_DIR/bin/shutdown.sh &>/dev/null
+		i=12
+		while [ $i -gt 0 ]; do 
+			ps -ef | grep tomcat | grep -v grep &>/dev/null
+			if [ $? -eq 0 ]; then
+				sleep 5
+			else
+				break
+			fi
+			sleep 5
+			i=$(($i-1))
+		done
+		ps -ef | grep tomcat | grep -v grep &>/dev/null
+		if [ $? -eq 0 ] ; then 
+			Stat 1
+		fi
+		sh $TOMCAT_DIR/bin/startup.sh  &>/dev/null
+		Stat $?
+	else
+		Print "Starting Tomcat" 
+		sh $TOMCAT_DIR/bin/startup.sh  &>/dev/null
+		Stat $?
+	fi
 }
 
 DB_F() {
