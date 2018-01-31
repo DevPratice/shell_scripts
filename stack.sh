@@ -165,7 +165,7 @@ DB_F() {
 	Stat $?
 
 	Print "Configuring DB"
-	echo "create database studentapp;
+	echo "create database if not exists studentapp;
 use studentapp;
 CREATE TABLE Students(student_id INT NOT NULL AUTO_INCREMENT,
 	student_name VARCHAR(100) NOT NULL,
