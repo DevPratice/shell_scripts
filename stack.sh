@@ -121,6 +121,8 @@ APP_F() {
 	wget $STUDENTAPP_WAR_URL -O $TOMCAT_DIR/webapps/student.war &>/dev/null
 	Stat $?
 
+	sed -i -e '/TestDB/ d' -e '$ i <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/studentapp"/>' $TOMCAT_DIR/conf/context.xml
+
 	#### Checking my tomcat is running or not
 	ps -ef | grep tomcat | grep -v grep &>/dev/null
 	if [ $? -eq 0 ]; then 
