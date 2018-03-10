@@ -6,7 +6,7 @@ MODJK_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/t
 MODJK_TAR_FILE="/opt/$(echo $MODJK_URL | awk -F / '{print $NF}')"
 MODJK_DIR=$(echo $MODJK_TAR_FILE | sed -e 's/.tar.gz//' )
 
-TOMCAT_URL='http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.27/bin/apache-tomcat-8.5.27.tar.gz'
+TOMCAT_URL='https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.29/bin/apache-tomcat-8.5.29.tar.gz'
 TOMCAT_TAR_FILE="/opt/$(echo $TOMCAT_URL | awk -F / '{print $NF}')"
 TOMCAT_DIR=$(echo $TOMCAT_TAR_FILE | sed -e 's/.tar.gz//')
 
